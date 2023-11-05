@@ -196,45 +196,28 @@ class TypeParser
 			$tokens->dropSavePoint(); // because of ConstFetchNode
 		}
 
-		$currentTokenValue = $tokens->currentTokenValue();
-		$currentTokenType = $tokens->currentTokenType();
-		$currentTokenOffset = $tokens->currentTokenOffset();
-		$currentTokenLine = $tokens->currentTokenLine();
+		$exception = new ParserException(
+			$tokens->currentTokenValue(),
+			$tokens->currentTokenType(),
+			$tokens->currentTokenOffset(),
+			Lexer::TOKEN_IDENTIFIER,
+			null,
+			$tokens->currentTokenLine()
+		);
 
 		if ($this->constExprParser === null) {
-			throw new ParserException(
-				$currentTokenValue,
-				$currentTokenType,
-				$currentTokenOffset,
-				Lexer::TOKEN_IDENTIFIER,
-				null,
-				$currentTokenLine
-			);
+			throw $exception;
 		}
 
 		try {
 			$constExpr = $this->constExprParser->parse($tokens, true);
 			if ($constExpr instanceof Ast\ConstExpr\ConstExprArrayNode) {
-				throw new ParserException(
-					$currentTokenValue,
-					$currentTokenType,
-					$currentTokenOffset,
-					Lexer::TOKEN_IDENTIFIER,
-					null,
-					$currentTokenLine
-				);
+				throw $exception;
 			}
 
 			return $this->enrichWithAttributes($tokens, new Ast\Type\ConstTypeNode($constExpr), $startLine, $startIndex);
 		} catch (LogicException $e) {
-			throw new ParserException(
-				$currentTokenValue,
-				$currentTokenType,
-				$currentTokenOffset,
-				Lexer::TOKEN_IDENTIFIER,
-				null,
-				$currentTokenLine
-			);
+			throw $exception;
 		}
 	}
 
@@ -398,32 +381,41 @@ class TypeParser
 	public function parseGeneric(TokenIterator $tokens, Ast\Type\IdentifierTypeNode $baseType): Ast\Type\GenericTypeNode
 	{
 		$tokens->consumeTokenType(Lexer::TOKEN_OPEN_ANGLE_BRACKET);
+		$tokens->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
 
-		$startLine = $baseType->getAttribute(Ast\Attribute::START_LINE);
-		$startIndex = $baseType->getAttribute(Ast\Attribute::START_INDEX);
 		$genericTypes = [];
 		$variances = [];
 
-		$isFirst = true;
-		while ($isFirst || $tokens->tryConsumeTokenType(Lexer::TOKEN_COMMA)) {
+		[$genericTypes[], $variances[]] = $this->parseGenericTypeArgument($tokens);
+
+		$tokens->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
+
+		while ($tokens->tryConsumeTokenType(Lexer::TOKEN_COMMA)) {
 			$tokens->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
+			if ($tokens->tryConsumeTokenType(Lexer::TOKEN_CLOSE_ANGLE_BRACKET)) {
+				// trailing comma case
+				$type = new Ast\Type\GenericTypeNode($baseType, $genericTypes, $variances);
+				$startLine = $baseType->getAttribute(Ast\Attribute::START_LINE);
+				$startIndex = $baseType->getAttribute(Ast\Attribute::START_INDEX);
+				if ($startLine !== null && $startIndex !== null) {
+					$type = $this->enrichWithAttributes($tokens, $type, $startLine, $startIndex);
+				}
 
-			// trailing comma case
-			if (!$isFirst && $tokens->isCurrentTokenType(Lexer::TOKEN_CLOSE_ANGLE_BRACKET)) {
-				break;
+				return $type;
 			}
-			$isFirst = false;
-
 			[$genericTypes[], $variances[]] = $this->parseGenericTypeArgument($tokens);
 			$tokens->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
 		}
 
+		$tokens->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
+		$tokens->consumeTokenType(Lexer::TOKEN_CLOSE_ANGLE_BRACKET);
+
 		$type = new Ast\Type\GenericTypeNode($baseType, $genericTypes, $variances);
+		$startLine = $baseType->getAttribute(Ast\Attribute::START_LINE);
+		$startIndex = $baseType->getAttribute(Ast\Attribute::START_INDEX);
 		if ($startLine !== null && $startIndex !== null) {
 			$type = $this->enrichWithAttributes($tokens, $type, $startLine, $startIndex);
 		}
-
-		$tokens->consumeTokenType(Lexer::TOKEN_CLOSE_ANGLE_BRACKET);
 
 		return $type;
 	}
@@ -524,7 +516,7 @@ class TypeParser
 			return $this->parseNullable($tokens);
 
 		} elseif ($tokens->tryConsumeTokenType(Lexer::TOKEN_OPEN_PARENTHESES)) {
-			$type = $this->subParse($tokens);
+			$type = $this->parse($tokens);
 			$tokens->consumeTokenType(Lexer::TOKEN_CLOSE_PARENTHESES);
 			if ($tokens->isCurrentTokenType(Lexer::TOKEN_OPEN_SQUARE_BRACKET)) {
 				$type = $this->tryParseArrayOrOffsetAccess($tokens, $type);
@@ -608,33 +600,23 @@ class TypeParser
 			}
 		}
 
-		$currentTokenValue = $tokens->currentTokenValue();
-		$currentTokenType = $tokens->currentTokenType();
-		$currentTokenOffset = $tokens->currentTokenOffset();
-		$currentTokenLine = $tokens->currentTokenLine();
+		$exception = new ParserException(
+			$tokens->currentTokenValue(),
+			$tokens->currentTokenType(),
+			$tokens->currentTokenOffset(),
+			Lexer::TOKEN_IDENTIFIER,
+			null,
+			$tokens->currentTokenLine()
+		);
 
 		if ($this->constExprParser === null) {
-			throw new ParserException(
-				$currentTokenValue,
-				$currentTokenType,
-				$currentTokenOffset,
-				Lexer::TOKEN_IDENTIFIER,
-				null,
-				$currentTokenLine
-			);
+			throw $exception;
 		}
 
 		try {
 			$constExpr = $this->constExprParser->parse($tokens, true);
 			if ($constExpr instanceof Ast\ConstExpr\ConstExprArrayNode) {
-				throw new ParserException(
-					$currentTokenValue,
-					$currentTokenType,
-					$currentTokenOffset,
-					Lexer::TOKEN_IDENTIFIER,
-					null,
-					$currentTokenLine
-				);
+				throw $exception;
 			}
 
 			$type = new Ast\Type\ConstTypeNode($constExpr);
@@ -649,14 +631,7 @@ class TypeParser
 
 			return $type;
 		} catch (LogicException $e) {
-			throw new ParserException(
-				$currentTokenValue,
-				$currentTokenType,
-				$currentTokenOffset,
-				Lexer::TOKEN_IDENTIFIER,
-				null,
-				$currentTokenLine
-			);
+			throw $exception;
 		}
 	}
 

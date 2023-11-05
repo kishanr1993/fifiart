@@ -682,34 +682,24 @@ class PhpDocParser
 			$tokens->dropSavePoint(); // because of ConstFetchNode
 		}
 
-		$currentTokenValue = $tokens->currentTokenValue();
-		$currentTokenType = $tokens->currentTokenType();
-		$currentTokenOffset = $tokens->currentTokenOffset();
-		$currentTokenLine = $tokens->currentTokenLine();
+		$exception = new ParserException(
+			$tokens->currentTokenValue(),
+			$tokens->currentTokenType(),
+			$tokens->currentTokenOffset(),
+			Lexer::TOKEN_IDENTIFIER,
+			null,
+			$tokens->currentTokenLine()
+		);
 
 		try {
 			$constExpr = $this->doctrineConstantExprParser->parse($tokens, true);
 			if ($constExpr instanceof Ast\ConstExpr\ConstExprArrayNode) {
-				throw new ParserException(
-					$currentTokenValue,
-					$currentTokenType,
-					$currentTokenOffset,
-					Lexer::TOKEN_IDENTIFIER,
-					null,
-					$currentTokenLine
-				);
+				throw $exception;
 			}
 
 			return $constExpr;
 		} catch (LogicException $e) {
-			throw new ParserException(
-				$currentTokenValue,
-				$currentTokenType,
-				$currentTokenOffset,
-				Lexer::TOKEN_IDENTIFIER,
-				null,
-				$currentTokenLine
-			);
+			throw $exception;
 		}
 	}
 
@@ -1127,13 +1117,15 @@ class PhpDocParser
 	{
 		if ($tokens->isCurrentTokenType(Lexer::TOKEN_THIS_VARIABLE)) {
 			$parameter = '$this';
+			$requirePropertyOrMethod = true;
 			$tokens->next();
 		} else {
 			$parameter = $tokens->currentTokenValue();
+			$requirePropertyOrMethod = false;
 			$tokens->consumeTokenType(Lexer::TOKEN_VARIABLE);
 		}
 
-		if ($tokens->isCurrentTokenType(Lexer::TOKEN_ARROW)) {
+		if ($requirePropertyOrMethod || $tokens->isCurrentTokenType(Lexer::TOKEN_ARROW)) {
 			$tokens->consumeTokenType(Lexer::TOKEN_ARROW);
 
 			$propertyOrMethod = $tokens->currentTokenValue();

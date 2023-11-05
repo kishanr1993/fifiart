@@ -13,7 +13,6 @@
 namespace Predis\Connection;
 
 use InvalidArgumentException;
-use Predis\Client;
 use Predis\Command\RawCommand;
 use ReflectionClass;
 use UnexpectedValueException;
@@ -172,16 +171,6 @@ class Factory implements FactoryInterface
 
             $connection->addConnectCommand(
                 new RawCommand('AUTH', $cmdAuthArgs)
-            );
-        }
-
-        if ($parameters->client_info ?? false && !$connection instanceof RelayConnection) {
-            $connection->addConnectCommand(
-                new RawCommand('CLIENT', ['SETINFO', 'LIB-NAME', 'predis'])
-            );
-
-            $connection->addConnectCommand(
-                new RawCommand('CLIENT', ['SETINFO', 'LIB-VER', Client::VERSION])
             );
         }
 

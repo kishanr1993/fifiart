@@ -21,7 +21,8 @@ class ConfigurationResolver
      *                         to retrieve value from the environment or ini file.
      * @param mixed $defaultValue
      * @param string $expectedType  The expected type of the retrieved value.
-     * @param array $config additional configuration options.
+     * @param array $config
+     * @param array $additionalArgs
      *
      * @return mixed
      */
@@ -32,10 +33,6 @@ class ConfigurationResolver
         $config = []
     )
     {
-        $iniOptions = isset($config['ini_resolver_options'])
-            ? $config['ini_resolver_options']
-            : [];
-
         $envValue = self::env($key, $expectedType);
         if (!is_null($envValue)) {
             return $envValue;
@@ -44,13 +41,7 @@ class ConfigurationResolver
         if (!isset($config['use_aws_shared_config_files'])
             || $config['use_aws_shared_config_files'] != false
         ) {
-            $iniValue = self::ini(
-                $key,
-                $expectedType,
-                null,
-                null,
-                $iniOptions
-            );
+            $iniValue = self::ini($key, $expectedType);
             if(!is_null($iniValue)) {
                 return $iniValue;
             }
@@ -98,13 +89,8 @@ class ConfigurationResolver
      *
      * @return null | mixed
      */
-    public static function ini(
-        $key,
-        $expectedType,
-        $profile = null,
-        $filename = null,
-        $options = []
-    ){
+    public static function ini($key, $expectedType, $profile = null, $filename = null)
+    {
         $filename = $filename ?: (self::getDefaultConfigFilename());
         $profile = $profile ?: (getenv(self::ENV_PROFILE) ?: 'default');
 
@@ -114,20 +100,6 @@ class ConfigurationResolver
         // Use INI_SCANNER_NORMAL instead of INI_SCANNER_TYPED for PHP 5.5 compatibility
         //TODO change after deprecation
         $data = @\Aws\parse_ini_file($filename, true, INI_SCANNER_NORMAL);
-
-        if (isset($options['section'])
-            && isset($options['subsection'])
-            && isset($options['key']))
-        {
-            return self::retrieveValueFromIniSubsection(
-                $data,
-                $profile,
-                $filename,
-                $expectedType,
-                $options
-            );
-        }
-
         if ($data === false
             || !isset($data[$profile])
             || !isset($data[$profile][$key])
@@ -204,47 +176,5 @@ class ConfigurationResolver
             $value = intVal($value);
         }
         return $value;
-    }
-
-    /**
-     * Normalizes string values pulled out of ini files and
-     * environment variables.
-     *
-     * @param array $data The data retrieved the ini file
-     * @param string $profile The specified ini profile
-     * @param string $filename The full path to the ini file
-     * @param array $options Additional arguments passed to the configuration resolver
-     *
-     * @return mixed
-     */
-    private static function retrieveValueFromIniSubsection(
-        $data,
-        $profile,
-        $filename,
-        $expectedType,
-        $options
-    ){
-        $section = $options['section'];
-        if ($data === false
-            || !isset($data[$profile][$section])
-            || !isset($data["{$section} {$data[$profile][$section]}"])
-        ) {
-            return null;
-        }
-
-        $services_section = \Aws\parse_ini_section_with_subsections(
-            $filename,
-            "services {$data[$profile]['services']}"
-        );
-
-        if (!isset($services_section[$options['subsection']][$options['key']])
-        ) {
-            return null;
-        }
-
-        return self::convertType(
-            $services_section[$options['subsection']][$options['key']],
-            $expectedType
-        );
     }
 }
