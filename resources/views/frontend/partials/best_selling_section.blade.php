@@ -1,4 +1,4 @@
-@if (get_setting('best_selling') == 1 && count(get_best_selling_products(20)) > 0)
+@if (get_setting('best_selling') == 1 && count(get_best_selling_products(6)) > 0)
 <!-- Start product section -->
 <section class="product__section section--padding pt-0">
     <div class="container-fluid">

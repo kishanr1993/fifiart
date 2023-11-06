@@ -21,12 +21,11 @@
             <div id="section{{ $category->id }}" class="tab_pane @if($key1 == 0) active show @endif">
                 <div class="product__section--inner">
                     <div class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2 mb--n30">
-                        <div class="col mb-30">
                                     @foreach (get_cached_products($category->id) as $key => $product)
+                        <div class="col mb-30">
                                          @include('frontend.partials.product_box_1',['product' => $product])
-                                    @endforeach
-
                         </div>
+                                    @endforeach
                     </div>
                 </div>
             </div>

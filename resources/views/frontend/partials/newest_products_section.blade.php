@@ -10,7 +10,7 @@
                     </div>
                     <div class="product__section--inner">
                         <div class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2 mb--n30">
-                            @foreach (get_best_selling_products(20) as $key => $product)
+                            @foreach (get_best_selling_products(10) as $key => $product)
                             <div class="col mb-30">
                                 @include('frontend.partials.product_box_1',['product' => $product])
                             </div>
