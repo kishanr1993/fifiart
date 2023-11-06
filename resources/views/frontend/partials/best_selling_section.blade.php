@@ -11,7 +11,7 @@
                     </div>
                     <div class="product__section--inner">
                         <div class="row row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2 mb--n25">
-                            @foreach (get_best_selling_products(20) as $key => $product)
+                            @foreach (get_best_selling_products(6) as $key => $product)
                                 <div class="col mb-25">
                                     @include('frontend.partials.product_box_1',['product' => $product])
                                 </div>
