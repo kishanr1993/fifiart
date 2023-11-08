@@ -1,193 +1,174 @@
 @extends('frontend.layouts.app')
 
 @section('content')
-    <section class="gry-bg py-6">
-        <div class="profile">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-8 col-lg-10 mx-auto">
-                        <div class="card shadow-none rounded-0 border">
-                            <div class="row">
-                                <!-- Left Side -->
-                                <div class="col-lg-6 col-md-7 p-4 p-lg-5">
-                                    <!-- Titles -->
-                                    <div class="text-center">
-                                        <h1 class="fs-20 fs-md-24 fw-700 text-primary">{{ translate('Welcome Back !')}}</h1>
-                                        <h5 class="fs-14 fw-400 text-dark">{{ translate('Login to your account')}}</h5>
-                                    </div>
-                                    <!-- Login form -->
-                                    <div class="pt-3 pt-lg-4">
-                                        <div class="">
-                                            <form class="form-default" role="form" action="{{ route('login') }}" method="POST">
-                                                @csrf
-                                                
-                                                <!-- Email or Phone -->
-                                                @if (addon_is_activated('otp_system'))
-                                                    <div class="form-group phone-form-group mb-1">
-                                                        <label for="phone" class="fs-12 fw-700 text-soft-dark">{{  translate('Phone') }}</label>
-                                                        <input type="tel" id="phone-code" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }} rounded-0" value="{{ old('phone') }}" placeholder="" name="phone" autocomplete="off">
-                                                    </div>
 
-                                                    <input type="hidden" name="country_code" value="">
-                                                    
-                                                    <div class="form-group email-form-group mb-1 d-none">
-                                                        <label for="email" class="fs-12 fw-700 text-soft-dark">{{  translate('Email') }}</label>
-                                                        <input type="email" class="form-control rounded-0 {{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{  translate('johndoe@example.com') }}" name="email" id="email" autocomplete="off">
-                                                        @if ($errors->has('email'))
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $errors->first('email') }}</strong>
-                                                            </span>
-                                                        @endif
-                                                    </div>
-                                                    
-                                                    <div class="form-group text-right">
-                                                        <button class="btn btn-link p-0 text-primary" type="button" onclick="toggleEmailPhone(this)"><i>*{{ translate('Use Email Instead') }}</i></button>
-                                                    </div>
-                                                @else
-                                                    <div class="form-group">
-                                                        <label for="email" class="fs-12 fw-700 text-soft-dark">{{  translate('Email') }}</label>
-                                                        <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }} rounded-0" value="{{ old('email') }}" placeholder="{{  translate('johndoe@example.com') }}" name="email" id="email" autocomplete="off">
-                                                        @if ($errors->has('email'))
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $errors->first('email') }}</strong>
-                                                            </span>
-                                                        @endif
-                                                    </div>
-                                                @endif
-                                                    
-                                                <!-- password -->
-                                                <div class="form-group">
-                                                    <label for="password" class="fs-12 fw-700 text-soft-dark">{{  translate('Password') }}</label>
-                                                    <input type="password" class="form-control rounded-0 {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ translate('Password')}}" name="password" id="password">
-                                                </div>
+<main class="main__content_wrapper">
 
-                                                <div class="row mb-2">
-                                                    <!-- Remember Me -->
-                                                    <div class="col-6">
-                                                        <label class="aiz-checkbox">
-                                                            <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                                                            <span class="has-transition fs-12 fw-400 text-gray-dark hov-text-primary">{{  translate('Remember Me') }}</span>
-                                                            <span class="aiz-square-check"></span>
-                                                        </label>
-                                                    </div>
-                                                    <!-- Forgot password -->
-                                                    <div class="col-6 text-right">
-                                                        <a href="{{ route('password.request') }}" class="text-reset fs-12 fw-400 text-gray-dark hov-text-primary"><u>{{ translate('Forgot password?')}}</u></a>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Submit Button -->
-                                                <div class="mb-4 mt-4">
-                                                    <button type="submit" class="btn btn-primary btn-block fw-700 fs-14 rounded-4">{{  translate('Login') }}</button>
-                                                </div>
-                                            </form>
-
-                                            <!-- DEMO MODE -->
-                                            @if (env("DEMO_MODE") == "On")
-                                                <div class="mb-4">
-                                                    <table class="table table-bordered mb-0">
-                                                        <tbody>
-                                                            {{-- <tr>
-                                                                <td>{{ translate('Seller Account')}}</td>
-                                                                <td>
-                                                                    <button class="btn btn-info btn-sm" onclick="autoFillSeller()">{{ translate('Copy credentials') }}</button>
-                                                                </td>
-                                                            </tr> --}}
-                                                            <tr>
-                                                                <td>{{ translate('Customer Account')}}</td>
-                                                                <td>
-                                                                    <button class="btn btn-info btn-sm" onclick="autoFillCustomer()">{{ translate('Copy credentials') }}</button>
-                                                                </td>
-                                                            </tr>
-                                                            {{-- <tr>
-                                                                <td>{{ translate('Delivery Boy Account')}}</td>
-                                                                <td>
-                                                                    <button class="btn btn-info btn-sm" onclick="autoFillDeliveryBoy()">{{ translate('Copy credentials') }}</button>
-                                                                </td>
-                                                            </tr> --}}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            @endif
-
-                                            <!-- Social Login -->
-                                            @if(get_setting('google_login') == 1 || get_setting('facebook_login') == 1 || get_setting('twitter_login') == 1 || get_setting('apple_login') == 1)
-                                                <div class="text-center mb-3">
-                                                    <span class="bg-white fs-12 text-gray">{{ translate('Or Login With')}}</span>
-                                                </div>
-                                                <ul class="list-inline social colored text-center mb-4">
-                                                    @if (get_setting('facebook_login') == 1)
-                                                        <li class="list-inline-item">
-                                                            <a href="{{ route('social.login', ['provider' => 'facebook']) }}" class="facebook">
-                                                                <i class="lab la-facebook-f"></i>
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                    @if(get_setting('google_login') == 1)
-                                                        <li class="list-inline-item">
-                                                            <a href="{{ route('social.login', ['provider' => 'google']) }}" class="google">
-                                                                <i class="lab la-google"></i>
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                    @if (get_setting('twitter_login') == 1)
-                                                        <li class="list-inline-item">
-                                                            <a href="{{ route('social.login', ['provider' => 'twitter']) }}" class="twitter">
-                                                                <i class="lab la-twitter"></i>
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                    @if (get_setting('apple_login') == 1)
-                                                        <li class="list-inline-item">
-                                                            <a href="{{ route('social.login', ['provider' => 'apple']) }}"
-                                                                class="apple">
-                                                                <i class="lab la-apple"></i>
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                </ul>
-                                            @endif
-                                        </div>
-
-                                        <!-- Register Now -->
-                                        <div class="text-center">
-                                            <p class="fs-12 text-gray mb-0">{{ translate('Dont have an account?')}}</p>
-                                            <a href="{{ route('user.registration') }}" class="fs-14 fw-700 animate-underline-primary">{{ translate('Register Now')}}</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Right Side Image -->
-                                <div class="col-lg-6 col-md-5 py-3 py-md-0">
-                                    <img src="{{ uploaded_asset(get_setting('login_page_image')) }}" alt="" class="img-fit h-100">
-                                </div>
-                            </div>
-                        </div>
+    <!-- Start breadcrumb section -->
+    <section class="breadcrumb__section breadcrumb__bg">
+        <div class="container">
+            <div class="row row-cols-1">
+                <div class="col">
+                    <div class="breadcrumb__content">
+                        <h1 class="breadcrumb__content--title text-white mb-10">Account Page</h1>
+                        <ul class="breadcrumb__content--menu d-flex">
+                            <li class="breadcrumb__content--menu__items"><a class="text-white" href="{{ route('home') }}">Home</a></li>
+                            <li class="breadcrumb__content--menu__items"><span class="text-white">Account Page</span></li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-        @php
-            // dd(get_active_country_codes());
-        @endphp
     </section>
+    <!-- End breadcrumb section -->
+
+    <!-- Start login section  -->
+    <div class="login__section section--padding">
+        <div class="container">
+            <form class="form-default" role="form" action="{{ route('login') }}" method="POST">
+                @csrf
+                <div class="login__section--inner">
+                    <div class="row row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 mb--n30 justify-content-center">
+                        <div class="col-6 align-self-center">
+                            <div class="account__login">
+                                <div class="account__login--header mb-25">
+                                    <h3 class="account__login--header__title mb-10">{{ translate('Welcome Back !')}}</h3>
+                                    <p class="account__login--header__desc">{{ translate('Login to your account')}}</p>
+                                </div>
+                                <div class="account__login--inner">
+                                    @if (addon_is_activated('otp_system'))
+                                    <label>
+                                        <input class="account__login--input {{ $errors->has('phone') ? ' is-invalid' : '' }}" placeholder="{{  translate('Phone') }}" type="tel" id="phone-code" value="{{ old('phone') }}" name="phone" autocomplete="off" />
+                                    </label>
+                                    <input type="hidden" name="country_code" value="" />
+
+                                    <label>
+                                        <input class="account__login--input {{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{  translate('Email') }}" type="email" id="phone-code" value="{{ old('email') }}" name="email" id="email" autocomplete="off" />
+                                            @if ($errors->has('email'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('email') }}</strong>
+                                        </span>
+                                            @endif
+                                    </label>
+
+                                    <button class="account__login--btn primary__btn" type="button" onclick="toggleEmailPhone(this)"><i>*{{ translate('Use Email Instead') }}</i></button>
+
+                                    @else
+
+                                    <label>
+                                        <input class="account__login--input {{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{  translate('Email') }}" type="{{ old('email') }}" name="email" id="email" autocomplete="off" />
+                                                @if ($errors->has('email'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('email') }}</strong>
+                                        </span>
+                                                @endif
+                                    </label>
+
+                                    @endif
+
+                                    <!-- password -->
+                                    <label>
+                                        <input class="account__login--input {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{  translate('Password') }}" type="password" name="password" id="password" />
+                                    </label>
+
+
+                                    <div class="account__login--remember__forgot mb-15 d-flex justify-content-between align-items-center">
+                                        <div class="account__login--remember position__relative">
+                                            <input class="checkout__checkbox--input" id="check1" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }} />
+                                            <span class="checkout__checkbox--checkmark"></span>
+                                            <label class="checkout__checkbox--label login__remember--label" for="check1">
+                                                {{  translate('Remember Me') }}
+                                            </label>
+                                        </div>
+                                        <a href="{{ route('password.request') }}" class="account__login--forgot" type="submit">{{ translate('Forgot password?')}}</a>
+                                    </div>
+                                    <button class="account__login--btn primary__btn" type="submit">{{  translate('Login') }}</button>
+
+                                    <!-- Social Login -->
+                                    @if(get_setting('google_login') == 1 || get_setting('facebook_login') == 1 || get_setting('twitter_login') == 1 || get_setting('apple_login') == 1)
+                                    <div class="account__login--divide">
+                                        <span class="account__login--divide__text">OR</span>
+                                    </div>
+                                    <div class="account__social d-flex justify-content-center mb-15">
+
+                                            @if (get_setting('facebook_login') == 1)
+                                        <a class="account__social--link facebook" target="_blank" href="{{ route('social.login', ['provider' => 'facebook']) }}">Facebook</a>
+                                            @endif
+
+                                            @if(get_setting('google_login') == 1)
+                                        <a class="account__social--link google" target="_blank" href="{{ route('social.login', ['provider' => 'google']) }}">Google</a>
+                                            @endif
+
+                                            @if (get_setting('twitter_login') == 1)
+                                        <a class="account__social--link twitter" target="_blank" href="{{ route('social.login', ['provider' => 'twitter']) }}">Twitter</a>
+                                            @endif
+
+                                            @if (get_setting('apple_login') == 1)
+                                        <a class="account__social--link apple" target="_blank" href="{{ route('social.login', ['provider' => 'apple']) }}">Twitter</a>
+                                            @endif
+
+                                    </div>
+                                    @endif
+
+                                    <!-- Register Now -->
+                                    <p class="account__login--signup__text">{{ translate('Dont have an account?')}} <a href="{{ route('user.registration') }}">{{ translate('Register Now')}}</a></p>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>     
+    </div>
+    <!-- End login section  -->
+
+    <!-- Start Newsletter banner section -->
+    <section class="newsletter__banner--section section--padding pt-0">
+        <div class="container">
+            <div class="newsletter__banner--thumbnail position__relative">
+                <img class="newsletter__banner--thumbnail__img" src="{{ static_asset('assets/img/banner/banner-bg7.webp') }}" alt="newsletter-banner">
+                <div class="newsletter__content newsletter__subscribe">
+                    <h5 class="newsletter__content--subtitle text-white">Want to offer regularly ?</h5>
+                    <h2 class="newsletter__content--title text-white h3 mb-25">Subscribe Our Newsletter <br>
+                        for Get Daily Update</h2>
+                    <form class="newsletter__subscribe--form position__relative" action="{{ route('subscribers.store') }}">
+                        @csrf
+                        <label>
+                            <input class="newsletter__subscribe--input" placeholder="{{ translate('Your Email Address') }}" type="email" name="email" required>
+                        </label>
+                        <button class="newsletter__subscribe--button primary__btn" type="submit">{{ translate('Subscribe') }}
+                            <svg class="newsletter__subscribe--button__icon" xmlns="http://www.w3.org/2000/svg" width="9.159" height="7.85" viewBox="0 0 9.159 7.85">
+                            <path  data-name="Icon material-send" d="M3,12.35l9.154-3.925L3,4.5,3,7.553l6.542.872L3,9.3Z" transform="translate(-3 -4.5)" fill="currentColor"/>
+                            </svg>
+                        </button>
+                    </form>   
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Newsletter banner section -->
+
+</main>
+
 @endsection
 
 @section('script')
-    <script type="text/javascript">
-        function autoFillSeller(){
-            $('#email').val('seller@example.com');
-            $('#password').val('123456');
-        }
+<script type="text/javascript">
+    function autoFillSeller(){
+        $('#email').val('seller@example.com');
+        $('#password').val('123456');
+    }
 
-        function autoFillCustomer(){
-            $('#email').val('customer@example.com');
-            $('#password').val('123456');
-        }
+    function autoFillCustomer(){
+        $('#email').val('customer@example.com');
+        $('#password').val('123456');
+    }
         
-        function autoFillDeliveryBoy(){
-            $('#email').val('deliveryboy@example.com');
-            $('#password').val('123456');
-        }
-    </script>
+    function autoFillDeliveryBoy(){
+        $('#email').val('deliveryboy@example.com');
+        $('#password').val('123456');
+    }
+</script>
 @endsection
