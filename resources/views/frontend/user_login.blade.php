@@ -29,7 +29,7 @@
                 @csrf
                 <div class="login__section--inner">
                     <div class="row row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 mb--n30 justify-content-center">
-                        <div class="col-6 align-self-center">
+                        <div class="col">
                             <div class="account__login">
                                 <div class="account__login--header mb-25">
                                     <h3 class="account__login--header__title mb-10">{{ translate('Welcome Back !')}}</h3>
