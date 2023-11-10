@@ -22,261 +22,205 @@
 
 @section('meta')
     <!-- Schema.org markup for Google+ -->
-    <meta itemprop="name" content="{{ $meta_title }}">
-    <meta itemprop="description" content="{{ $meta_description }}">
+<meta itemprop="name" content="{{ $meta_title }}">
+<meta itemprop="description" content="{{ $meta_description }}">
 
-    <!-- Twitter Card data -->
-    <meta name="twitter:title" content="{{ $meta_title }}">
-    <meta name="twitter:description" content="{{ $meta_description }}">
+<!-- Twitter Card data -->
+<meta name="twitter:title" content="{{ $meta_title }}">
+<meta name="twitter:description" content="{{ $meta_description }}">
 
-    <!-- Open Graph data -->
-    <meta property="og:title" content="{{ $meta_title }}" />
-    <meta property="og:description" content="{{ $meta_description }}" />
+<!-- Open Graph data -->
+<meta property="og:title" content="{{ $meta_title }}" />
+<meta property="og:description" content="{{ $meta_description }}" />
 @endsection
 
 @section('content')
 
-    <section class="mb-4 pt-4">
-        <div class="container sm-px-0 pt-2">
-            <form class="" id="search-form" action="" method="GET">
-                <div class="row">
+<main class="main__content_wrapper">
 
-                    <!-- Sidebar Filters -->
-                    <div class="col-xl-3">
-                        <div class="aiz-filter-sidebar collapse-sidebar-wrap sidebar-xl sidebar-right z-1035">
-                            <div class="overlay overlay-fixed dark c-pointer" data-toggle="class-toggle" data-target=".aiz-filter-sidebar" data-same=".filter-sidebar-thumb"></div>
-                            <div class="collapse-sidebar c-scrollbar-light text-left">
-                                <div class="d-flex d-xl-none justify-content-between align-items-center pl-3 border-bottom">
-                                    <h3 class="h6 mb-0 fw-600">{{ translate('Filters') }}</h3>
-                                    <button type="button" class="btn btn-sm p-2 filter-sidebar-thumb" data-toggle="class-toggle" data-target=".aiz-filter-sidebar" >
-                                        <i class="las la-times la-2x"></i>
-                                    </button>
-                                </div>
+    <!-- Start breadcrumb section -->
+    <section class="breadcrumb__section breadcrumb__bg">
+        <div class="container-fluid">
+            <div class="row row-cols-1">
+                <div class="col">
+                    <div class="breadcrumb__content">
+                        <h1 class="breadcrumb__content--title text-white mb-10">Shop Wth US</h1>
+                        <ul class="breadcrumb__content--menu d-flex">
+                            <li class="breadcrumb__content--menu__items"><a class="text-white" href="{{ route('home') }}">{{ translate('Home')}}</a></li>
 
-                                <!-- Categories -->
-                                <div class="bg-white border mb-3">
-                                    <div class="fs-16 fw-700 p-3">
-                                        <a href="#collapse_1" class="dropdown-toggle filter-section text-dark d-flex align-items-center justify-content-between" data-toggle="collapse">
-                                            {{ translate('Categories')}}
-                                        </a>
-                                    </div>
-                                    <div class="collapse show" id="collapse_1">
-                                        <ul class="p-3 mb-0 list-unstyled">
-                                            @if (!isset($category_id))
-                                                @foreach (get_level_zero_categories() as $category)
-                                                    <li class="mb-3 text-dark">
-                                                        <a class="text-reset fs-14 hov-text-primary" href="{{ route('products.category', $category->slug) }}">{{ $category->getTranslation('name') }}</a>
-                                                    </li>
-                                                @endforeach
-                                            @else
-                                                <li class="mb-3">
-                                                    <a class="text-reset fs-14 fw-600 hov-text-primary" href="{{ route('search') }}">
-                                                        <i class="las la-angle-left"></i>
-                                                        {{ translate('All Categories')}}
-                                                    </a>
-                                                </li>
-                                                @if (get_single_category($category_id)->parent_id != 0)
-                                                    <li class="mb-3">
-                                                        <a class="text-reset fs-14 fw-600 hov-text-primary" href="{{ route('products.category', get_single_category(get_single_category($category_id)->parent_id)->slug) }}">
-                                                            <i class="las la-angle-left"></i>
-                                                            {{ get_single_category(get_single_category($category_id)->parent_id)->getTranslation('name') }}
-                                                        </a>
-                                                    </li>
-                                                @endif
-                                                <li class="mb-3">
-                                                    <a class="text-reset fs-14 fw-600 hov-text-primary" href="{{ route('products.category', get_single_category($category_id)->slug) }}">
-                                                        <i class="las la-angle-left"></i>
-                                                        {{ get_single_category($category_id)->getTranslation('name') }}
-                                                    </a>
-                                                </li>
-                                                @foreach (\App\Utility\CategoryUtility::get_immediate_children_ids($category_id) as $key => $id)
-                                                    <li class="ml-4 mb-3">
-                                                        <a class="text-reset fs-14 hov-text-primary" href="{{ route('products.category', get_single_category($id)->slug) }}">{{ get_single_category($id)->getTranslation('name') }}</a>
-                                                    </li>
-                                                @endforeach
-                                            @endif
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <!-- Price range -->
-                                <div class="bg-white border mb-3">
-                                    <div class="fs-16 fw-700 p-3">
-                                        {{ translate('Price range')}}
-                                    </div>
-                                    <div class="p-3 mr-3">
-                                        <div class="aiz-range-slider">
-                                            <div
-                                                id="input-slider-range"
-                                                data-range-value-min="@if(get_products_count() < 1) 0 @else {{ get_product_min_unit_price() }} @endif"
-                                                data-range-value-max="@if(get_products_count() < 1) 0 @else {{ get_product_max_unit_price() }} @endif"
-                                            ></div>
-
-                                            <div class="row mt-2">
-                                                <div class="col-6">
-                                                    <span class="range-slider-value value-low fs-14 fw-600 opacity-70"
-                                                        @if (isset($min_price))
-                                                            data-range-value-low="{{ $min_price }}"
-                                                        @elseif($products->min('unit_price') > 0)
-                                                            data-range-value-low="{{ $products->min('unit_price') }}"
-                                                        @else
-                                                            data-range-value-low="0"
-                                                        @endif
-                                                        id="input-slider-range-value-low"
-                                                    ></span>
-                                                </div>
-                                                <div class="col-6 text-right">
-                                                    <span class="range-slider-value value-high fs-14 fw-600 opacity-70"
-                                                        @if (isset($max_price))
-                                                            data-range-value-high="{{ $max_price }}"
-                                                        @elseif($products->max('unit_price') > 0)
-                                                            data-range-value-high="{{ $products->max('unit_price') }}"
-                                                        @else
-                                                            data-range-value-high="0"
-                                                        @endif
-                                                        id="input-slider-range-value-high"
-                                                    ></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Hidden Items -->
-                                    <input type="hidden" name="min_price" value="">
-                                    <input type="hidden" name="max_price" value="">
-                                </div>
-                                
-                                <!-- Attributes -->
-                                @foreach ($attributes as $attribute)
-                                    <div class="bg-white border mb-3">
-                                        <div class="fs-16 fw-700 p-3">
-                                            <a href="#" class="dropdown-toggle text-dark filter-section collapsed d-flex align-items-center justify-content-between" 
-                                                data-toggle="collapse" data-target="#collapse_{{ str_replace(' ', '_', $attribute->name) }}" style="white-space: normal;">
-                                                {{ $attribute->getTranslation('name') }}
-                                            </a>
-                                        </div>
-                                        @php
-                                            $show = '';
-                                            foreach ($attribute->attribute_values as $attribute_value){
-                                                if(in_array($attribute_value->value, $selected_attribute_values)){
-                                                    $show = 'show';
-                                                }
-                                            }
-                                        @endphp
-                                        <div class="collapse {{ $show }}" id="collapse_{{ str_replace(' ', '_', $attribute->name) }}">
-                                            <div class="p-3 aiz-checkbox-list">
-                                                @foreach ($attribute->attribute_values as $attribute_value)
-                                                    <label class="aiz-checkbox mb-3">
-                                                        <input
-                                                            type="checkbox"
-                                                            name="selected_attribute_values[]"
-                                                            value="{{ $attribute_value->value }}" @if (in_array($attribute_value->value, $selected_attribute_values)) checked @endif
-                                                            onchange="filter()"
-                                                        >
-                                                        <span class="aiz-square-check"></span>
-                                                        <span class="fs-14 fw-400 text-dark">{{ $attribute_value->value }}</span>
-                                                    </label>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                                    
-                                <!-- Color -->
-                                @if (get_setting('color_filter_activation'))
-                                    <div class="bg-white border mb-3">
-                                        <div class="fs-16 fw-700 p-3">
-                                            <a href="#" class="dropdown-toggle text-dark filter-section collapsed d-flex align-items-center justify-content-between" data-toggle="collapse" data-target="#collapse_color">
-                                                {{ translate('Filter by color')}}
-                                            </a>
-                                        </div>
-                                        @php
-                                            $show = '';
-                                            foreach ($colors as $key => $color){
-                                                if(isset($selected_color) && $selected_color == $color->code){
-                                                    $show = 'show';
-                                                }
-                                            }
-                                        @endphp
-                                        <div class="collapse {{ $show }}" id="collapse_color">
-                                            <div class="p-3 aiz-radio-inline">
-                                                @foreach ($colors as $key => $color)
-                                                <label class="aiz-megabox pl-0 mr-2" data-toggle="tooltip" data-title="{{ $color->name }}">
-                                                    <input
-                                                        type="radio"
-                                                        name="color"
-                                                        value="{{ $color->code }}"
-                                                        onchange="filter()"
-                                                        @if(isset($selected_color) && $selected_color == $color->code) checked @endif
-                                                    >
-                                                    <span class="aiz-megabox-elem rounded d-flex align-items-center justify-content-center p-1 mb-2">
-                                                        <span class="size-30px d-inline-block rounded" style="background: {{ $color->code }};"></span>
-                                                    </span>
-                                                </label>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Contents -->
-                    <div class="col-xl-9">
-                        
-                        <!-- Breadcrumb -->
-                        <ul class="breadcrumb bg-transparent py-0 px-1">
-                            <li class="breadcrumb-item has-transition opacity-50 hov-opacity-100">
-                                <a class="text-reset" href="{{ route('home') }}">{{ translate('Home')}}</a>
-                            </li>
                             @if(!isset($category_id))
-                                <li class="breadcrumb-item fw-700  text-dark">
-                                    "{{ translate('All Categories')}}"
-                                </li>
-                            @else
-                                <li class="breadcrumb-item opacity-50 hov-opacity-100">
-                                    <a class="text-reset" href="{{ route('search') }}">{{ translate('All Categories')}}</a>
-                                </li>
+                            <li class="breadcrumb__content--menu__items">
+                                "{{ translate('All Categories')}}"
+                            </li>
+                                    @else
+                            <li class="breadcrumb__content--menu__items">
+                                <a class="text-white" href="{{ route('search') }}">{{ translate('All Categories')}}</a>
+                            </li>
                             @endif
+
                             @if(isset($category_id))
-                                <li class="text-dark fw-600 breadcrumb-item">
-                                    "{{ get_single_category($category_id)->getTranslation('name') }}"
-                                </li>
+                            <li class="breadcrumb__content--menu__items">
+                                "{{ get_single_category($category_id)->getTranslation('name') }}"
+                            </li>
                             @endif
+
                         </ul>
-                        
-                        <!-- Top Filters -->
-                        <div class="text-left">
-                            <div class="row gutters-5 flex-wrap align-items-center">
-                                <div class="col-lg col-10">
-                                    <h1 class="fs-20 fs-md-24 fw-700 text-dark">
-                                        @if(isset($category_id))
-                                            {{ get_single_category($category_id)->getTranslation('name') }}
-                                        @elseif(isset($query))
-                                            {{ translate('Search result for ') }}"{{ $query }}"
-                                        @else
-                                            {{ translate('All Products') }}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End breadcrumb section -->
+
+    <!-- Start shop section -->
+    <section class="shop__section section--padding">
+            <form class="" id="search-form" action="" method="GET">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-3 col-lg-4">
+                    <div class="shop__sidebar--widget widget__area d-md-none">
+                        <div class="single__widget widget__bg">
+                            <h2 class="widget__title position__relative h3">{{ translate('Categories')}}</h2>
+                            <ul class="widget__categories--menu">
+                                    @if (!isset($category_id))
+                                         @foreach (get_level_zero_categories() as $category)
+                                <li class="widget__categories--menu__list">
+                                    <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('products.category', $category->slug) }}">
+                                        <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                        <span class="widget__categories--sub__menu--text">{{ $category->getTranslation('name') }}</span>
+                                    </a>
+
+                                </li>
+                                        @endforeach
+                                    @else
+
+                                <li class="widget__categories--menu__list">
+                                    <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('search') }}">
+                                        <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                        <span class="widget__categories--sub__menu--text">{{ translate('All Categories')}}</span>
+                                    </a>
+
+                                </li>
+
+                                         @if (get_single_category($category_id)->parent_id != 0)
+
+                                <li class="widget__categories--menu__list">
+                                    <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('products.category', get_single_category(get_single_category($category_id)->parent_id)->slug) }}">
+                                        <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                        <span class="widget__categories--sub__menu--text">{{ get_single_category(get_single_category($category_id)->parent_id)->getTranslation('name') }}</span>
+                                    </a>
+
+                                </li>
+
                                         @endif
-                                    </h1>
-                                    <input type="hidden" name="keyword" value="{{ $query }}">
-                                </div>
-                                <div class="col-2 col-lg-auto d-xl-none mb-lg-3 text-right">
-                                    <button type="button" class="btn btn-icon p-0" data-toggle="class-toggle" data-target=".aiz-filter-sidebar">
-                                        <i class="la la-filter la-2x"></i>
-                                    </button>
-                                </div>
-                                {{-- <div class="col-6 col-lg-auto mb-3 w-lg-200px mr-xl-4 mr-lg-3">
-                                    @if (Route::currentRouteName() != 'products.brand')
-                                        <select class="form-control form-control-sm aiz-selectpicker rounded-0" data-live-search="true" name="brand" onchange="filter()">
-                                            <option value="">{{ translate('Brands')}}</option>
-                                            @foreach (get_all_brands() as $brand)
-                                                <option value="{{ $brand->slug }}" @isset($brand_id) @if ($brand_id == $brand->id) selected @endif @endisset>{{ $brand->getTranslation('name') }}</option>
-                                            @endforeach
-                                        </select>
+
+                                <li class="widget__categories--menu__list">
+                                    <label class="widget__categories--menu__label d-flex align-items-center">
+                                        <img class="widget__categories--menu__img" src="assets/img/product/small-product5.webp" alt="categories-img">
+                                        <span class="widget__categories--menu__text">{{ get_single_category($category_id)->getTranslation('name') }}</span>
+                                        <svg class="widget__categories--menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394">
+                                        <path  d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"></path>
+                                        </svg>
+                                    </label>
+                                    <ul class="widget__categories--sub__menu">
+                                                @foreach (\App\Utility\CategoryUtility::get_immediate_children_ids($category_id) as $key => $id)
+                                        <li class="widget__categories--sub__menu--list">
+                                            <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('products.category', get_single_category($id)->slug) }}">
+                                                <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                                <span class="widget__categories--sub__menu--text">{{ get_single_category($id)->getTranslation('name') }}</span>
+                                            </a>
+                                        </li>
+                                                @endforeach
+                                    </ul>
+                                </li>
+
                                     @endif
-                                </div> --}}
-                                <div class="col-6 col-lg-auto mb-3 w-lg-200px">
-                                    <select class="form-control form-control-sm aiz-selectpicker rounded-0" name="sort_by" onchange="filter()">
+                            </ul>
+                        </div>
+                        <div class="single__widget price__filter widget__bg">
+                            <h2 class="widget__title position__relative h3">{{ translate('Price range')}}</h2>
+                            
+                                <div class="price__filter--form__inner mb-15 d-flex align-items-center">
+                                    <div class="price__filter--group">
+                                        <label class="price__filter--label" for="Filter-Price-GTE1">From</label>
+                                        <div class="price__filter--input border-radius-5 d-flex align-items-center">
+                                            <span class="price__filter--currency">$</span>
+                                            <input class="price__filter--input__field border-0" id="Filter-Price-GTE1" name="min_price" type="number" placeholder="0" value="{{ isset($min_price) ? $min_price : '0'  }}" min="{{ isset($min_price) ? $min_price : $products->min('unit_price')  }}" max="{{ isset($max_price) ? $max_price : $products->max('unit_price')  }}">
+                                        </div>
+                                    </div>
+                                    <div class="price__divider">
+                                        <span>-</span>
+                                    </div>
+                                    <div class="price__filter--group">
+                                        <label class="price__filter--label" for="Filter-Price-LTE1">To</label>
+                                        <div class="price__filter--input border-radius-5 d-flex align-items-center">
+                                            <span class="price__filter--currency">$</span>
+                                            <input class="price__filter--input__field border-0" id="Filter-Price-LTE1" name="max_price" type="number"  placeholder="250.00" value="{{ isset($max_price) ? $max_price : '0'  }}" min="{{ isset($min_price) ? $min_price : $products->min('unit_price')  }}" max="{{ isset($max_price) ? $max_price : $products->max('unit_price')  }}"> 
+                                        </div>	
+                                    </div>
+                                </div>
+                                <button class="price__filter--btn primary__btn" type="submit">Filter</button>
+                            
+                        </div>
+
+                        <!-- Attributes -->
+                        @foreach ($attributes as $attribute)
+                        <div class="single__widget widget__bg">
+                            <h2 class="widget__title position__relative h3">{{ $attribute->getTranslation('name') }}</h2>
+                            <ul class="widget__form--check">
+
+                                @foreach ($attribute->attribute_values as $attribute_value)
+                                <li class="widget__form--check__list">
+                                    <label class="widget__form--check__label" for="collapse_{{ str_replace(' ', '_', $attribute->name) }}">{{ $attribute_value->value }}</label>
+                                    <input class="widget__form--check__input" id="collapse_{{ str_replace(' ', '_', $attribute->name) }}" type="checkbox" name="selected_attribute_values[]"
+                                           value="{{ $attribute_value->value }}" @if (in_array($attribute_value->value, $selected_attribute_values)) checked @endif
+                                           onchange="filter()"
+                                           />
+                                    <span class="widget__form--checkmark"></span>
+                                </li>
+                                 @endforeach
+
+                            </ul>
+                        </div>
+                        @endforeach
+
+                        <!-- Color -->
+                        @if (get_setting('color_filter_activation'))
+                        <div class="single__widget widget__bg">
+                            <h2 class="widget__title position__relative h3">{{ translate('Filter by color')}}</h2>
+                            <ul class="widget__form--check">
+                                    @foreach ($colors as $key => $color)
+                                <li class="widget__form--check__list">
+                                    <label class="widget__form--check__label" for="color{{ $key }}">{{ $color->code }}</label>
+                                    <input
+                                        class="widget__form--check__input"
+                                        id="color{{ $key }}"
+                                        type="radio"
+                                        name="color"
+                                        value="{{ $color->code }}"
+                                        onchange="filter()"
+                                                        @if(isset($selected_color) && $selected_color == $color->code) checked @endif
+                                        >
+                                    <span class="widget__form--checkmark"></span>
+                                </li>
+                                    @endforeach
+                            </ul>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-xl-9 col-lg-8">
+                    <div class="shop__header bg__gray--color d-flex align-items-center justify-content-between mb-30">
+                        <button class="widget__filter--btn d-none d-md-flex align-items-center">
+                            <svg  class="widget__filter--btn__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="28" d="M368 128h80M64 128h240M368 384h80M64 384h240M208 256h240M64 256h80"/><circle cx="336" cy="128" r="28" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="28"/><circle cx="176" cy="256" r="28" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="28"/><circle cx="336" cy="384" r="28" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="28"/></svg> 
+                            <span class="widget__filter--btn__text">Filter</span>
+                        </button>
+                        <div class="product__view--mode d-flex align-items-center">
+                            <div class="product__view--mode__list product__short--by align-items-center d-none d-lg-flex">
+                                <label class="product__view--label">Sort By :</label>
+                                <div class="select shop__header--select">
+                                    <select class="product__view--select" name="sort_by" onchange="filter()">
                                         <option value="">{{ translate('Sort by')}}</option>
                                         <option value="newest" @isset($sort_by) @if ($sort_by == 'newest') selected @endif @endisset>{{ translate('Newest')}}</option>
                                         <option value="oldest" @isset($sort_by) @if ($sort_by == 'oldest') selected @endif @endisset>{{ translate('Oldest')}}</option>
@@ -285,38 +229,108 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Products -->
-                        <div class="px-3">
-                            <div class="row gutters-16 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-4 row-cols-md-3 row-cols-2 border-top border-left">
-                                @foreach ($products as $key => $product)
-                                    <div class="col border-right border-bottom has-transition hov-shadow-out z-1">
-                                        @include('frontend.partials.product_box_1',['product' => $product])
-                                    </div>
-                                @endforeach
+                            <div class="product__view--mode__list">
+                                <div class="product__grid--column__buttons d-flex justify-content-center">
+                                    <button class="product__grid--column__buttons--icons active" data-toggle="tab" aria-label="product grid btn" data-target="#product_grid">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 9 9">
+                                        <g  transform="translate(-1360 -479)">
+                                        <rect id="Rectangle_5725" data-name="Rectangle 5725" width="4" height="4" transform="translate(1360 479)" fill="currentColor"/>
+                                        <rect id="Rectangle_5727" data-name="Rectangle 5727" width="4" height="4" transform="translate(1360 484)" fill="currentColor"/>
+                                        <rect id="Rectangle_5726" data-name="Rectangle 5726" width="4" height="4" transform="translate(1365 479)" fill="currentColor"/>
+                                        <rect id="Rectangle_5728" data-name="Rectangle 5728" width="4" height="4" transform="translate(1365 484)" fill="currentColor"/>
+                                        </g>
+                                        </svg>
+                                    </button>
+                                    <button class="product__grid--column__buttons--icons" data-toggle="tab" aria-label="product list btn" data-target="#product_list">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 13 8">
+                                        <g id="Group_14700" data-name="Group 14700" transform="translate(-1376 -478)">
+                                        <g  transform="translate(12 -2)">
+                                        <g id="Group_1326" data-name="Group 1326">
+                                        <rect id="Rectangle_5729" data-name="Rectangle 5729" width="3" height="2" transform="translate(1364 483)" fill="currentColor"/>
+                                        <rect id="Rectangle_5730" data-name="Rectangle 5730" width="9" height="2" transform="translate(1368 483)" fill="currentColor"/>
+                                        </g>
+                                        <g id="Group_1328" data-name="Group 1328" transform="translate(0 -3)">
+                                        <rect id="Rectangle_5729-2" data-name="Rectangle 5729" width="3" height="2" transform="translate(1364 483)" fill="currentColor"/>
+                                        <rect id="Rectangle_5730-2" data-name="Rectangle 5730" width="9" height="2" transform="translate(1368 483)" fill="currentColor"/>
+                                        </g>
+                                        <g id="Group_1327" data-name="Group 1327" transform="translate(0 -1)">
+                                        <rect id="Rectangle_5731" data-name="Rectangle 5731" width="3" height="2" transform="translate(1364 487)" fill="currentColor"/>
+                                        <rect id="Rectangle_5732" data-name="Rectangle 5732" width="9" height="2" transform="translate(1368 487)" fill="currentColor"/>
+                                        </g>
+                                        </g>
+                                        </g>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="aiz-pagination mt-4">
-                            {{ $products->appends(request()->input())->links() }}
+                        <!--<p class="product__showing--count">Showing 1–9 of 21 results</p>-->
+                    </div>
+                    <div class="shop__product--wrapper">
+                        <input type="hidden" name="keyword" value="{{ $query }}">
+                        <div class="tab_content">
+                            <div id="product_grid" class="tab_pane active show">
+                                <div class="product__section--inner product__grid--inner">
+                                    <div class="row row-cols-xxl-4 row-cols-xl-3 row-cols-lg-3 row-cols-md-3 row-cols-2 mb--n30">
+                                            @foreach ($products as $key => $product)
+                                                    <div class="col mb-30">
+                                                        @include('frontend.partials.product_box_1',['product' => $product])
+                                                    </div>
+                                            @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="product_list" class="tab_pane">
+                                <div class="product__section--inner">
+                                    <div class="row row-cols-1 mb--n30">
+                                        @foreach ($products as $key => $product)
+                                                <div class="col mb-30">
+                                                    @include('frontend.partials.product_box_2',['product' => $product])
+                                                </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pagination__area bg__gray--color">
+                            <nav class="pagination">
+                                {{ $products->appends(request()->input())->links() }}
+                                <!--                                <ul class="pagination__wrapper d-flex align-items-center justify-content-center">
+                                                                    <li class="pagination__list"><a href="shop.html" class="pagination__item--arrow  link ">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg"  width="22.51" height="20.443" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M244 400L100 256l144-144M120 256h292"/></svg></a>
+                                                                    <li>
+                                                                    <li class="pagination__list"><span class="pagination__item pagination__item--current">1</span></li>
+                                                                    <li class="pagination__list"><a href="shop.html" class="pagination__item link">2</a></li>
+                                                                    <li class="pagination__list"><a href="shop.html" class="pagination__item link">3</a></li>
+                                                                    <li class="pagination__list"><a href="shop.html" class="pagination__item link">4</a></li>
+                                                                    <li class="pagination__list"><a href="shop.html" class="pagination__item--arrow  link ">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M268 112l144 144-144 144M392 256H100"/></svg></a>
+                                                                    <li>
+                                                                </ul>-->
+                            </nav>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
+            </form>
     </section>
+    <!-- End shop section -->
+
+    
+</main>
 
 @endsection
 
 @section('script')
-    <script type="text/javascript">
-        function filter(){
-            $('#search-form').submit();
-        }
-        function rangefilter(arg){
-            $('input[name=min_price]').val(arg[0]);
-            $('input[name=max_price]').val(arg[1]);
-            filter();
-        }
-    </script>
+<script type="text/javascript">
+    function filter(){
+        $('#search-form').submit();
+    }
+    function rangefilter(arg){
+        $('input[name=min_price]').val(arg[0]);
+        $('input[name=max_price]').val(arg[1]);
+        filter();
+    }
+</script>
 @endsection
