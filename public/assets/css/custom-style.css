@@ -1,1 +1,4 @@
-/*your custom css goes here*/ 
+/*your custom css goes here*/
+.mx-auto{
+    margin: 0 auto;
+}

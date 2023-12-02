@@ -26,18 +26,18 @@ use App\Services\ProductFlashDealService;
 use App\Services\ProductStockService;
 use Illuminate\Support\Facades\Notification;
 
-class ProductController extends Controller
-{
+class ProductController extends Controller {
+
     protected $productService;
     protected $productTaxService;
     protected $productFlashDealService;
     protected $productStockService;
 
     public function __construct(
-        ProductService $productService,
-        ProductTaxService $productTaxService,
-        ProductFlashDealService $productFlashDealService,
-        ProductStockService $productStockService
+            ProductService $productService,
+            ProductTaxService $productTaxService,
+            ProductFlashDealService $productFlashDealService,
+            ProductStockService $productStockService
     ) {
         $this->productService = $productService;
         $this->productTaxService = $productTaxService;
@@ -53,13 +53,13 @@ class ProductController extends Controller
         $this->middleware(['permission:product_duplicate'])->only('duplicate');
         $this->middleware(['permission:product_delete'])->only('destroy');
     }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function admin_products(Request $request)
-    {
+    public function admin_products(Request $request) {
         CoreComponentRepository::instantiateShopRepository();
 
         $type = 'In House';
@@ -79,10 +79,10 @@ class ProductController extends Controller
         if ($request->search != null) {
             $sort_search = $request->search;
             $products = $products
-                ->where('name', 'like', '%' . $sort_search . '%')
-                ->orWhereHas('stocks', function ($q) use ($sort_search) {
-                    $q->where('sku', 'like', '%' . $sort_search . '%');
-                });
+                    ->where('name', 'like', '%' . $sort_search . '%')
+                    ->orWhereHas('stocks', function ($q) use ($sort_search) {
+                $q->where('sku', 'like', '%' . $sort_search . '%');
+            });
         }
 
         $products = $products->where('digital', 0)->orderBy('created_at', 'desc')->paginate(15);
@@ -95,8 +95,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function seller_products(Request $request, $product_type)
-    {
+    public function seller_products(Request $request, $product_type) {
         $col_name = null;
         $query = null;
         $seller_id = null;
@@ -108,7 +107,7 @@ class ProductController extends Controller
         }
         if ($request->search != null) {
             $products = $products
-                ->where('name', 'like', '%' . $request->search . '%');
+                    ->where('name', 'like', '%' . $request->search . '%');
             $sort_search = $request->search;
         }
         if ($request->type != null) {
@@ -122,16 +121,13 @@ class ProductController extends Controller
         $products = $products->orderBy('created_at', 'desc')->paginate(15);
         $type = 'Seller';
 
-        if($product_type == 'digital'){
+        if ($product_type == 'digital') {
             return view('backend.product.digital_products.index', compact('products', 'sort_search', 'type'));
         }
         return view('backend.product.products.index', compact('products', 'type', 'col_name', 'query', 'seller_id', 'sort_search'));
-
-
     }
 
-    public function all_products(Request $request)
-    {
+    public function all_products(Request $request) {
         $col_name = null;
         $query = null;
         $seller_id = null;
@@ -144,10 +140,10 @@ class ProductController extends Controller
         if ($request->search != null) {
             $sort_search = $request->search;
             $products = $products
-                ->where('name', 'like', '%' . $sort_search . '%')
-                ->orWhereHas('stocks', function ($q) use ($sort_search) {
-                    $q->where('sku', 'like', '%' . $sort_search . '%');
-                });
+                    ->where('name', 'like', '%' . $sort_search . '%')
+                    ->orWhereHas('stocks', function ($q) use ($sort_search) {
+                $q->where('sku', 'like', '%' . $sort_search . '%');
+            });
         }
         if ($request->type != null) {
             $var = explode(",", $request->type);
@@ -163,26 +159,23 @@ class ProductController extends Controller
         return view('backend.product.products.index', compact('products', 'type', 'col_name', 'query', 'seller_id', 'sort_search'));
     }
 
-
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         CoreComponentRepository::initializeCache();
 
         $categories = Category::where('parent_id', 0)
-            ->where('digital', 0)
-            ->with('childrenCategories')
-            ->get();
+                ->where('digital', 0)
+                ->with('childrenCategories')
+                ->get();
 
         return view('backend.product.products.create', compact('categories'));
     }
 
-    public function add_more_choice_option(Request $request)
-    {
+    public function add_more_choice_option(Request $request) {
         $all_attribute_values = AttributeValue::with('attribute')->where('attribute_id', $request->attribute_id)->get();
 
         $html = '';
@@ -200,34 +193,33 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductRequest $request)
-    {
+    public function store(ProductRequest $request) {
         $product = $this->productService->store($request->except([
-            '_token', 'sku', 'choice', 'tax_id', 'tax', 'tax_type', 'flash_deal_id', 'flash_discount', 'flash_discount_type'
+                    '_token', 'sku', 'choice', 'tax_id', 'tax', 'tax_type', 'flash_deal_id', 'flash_discount', 'flash_discount_type'
         ]));
         $request->merge(['product_id' => $product->id]);
 
         //VAT & Tax
         if ($request->tax_id) {
             $this->productTaxService->store($request->only([
-                'tax_id', 'tax', 'tax_type', 'product_id'
+                        'tax_id', 'tax', 'tax_type', 'product_id'
             ]));
         }
 
         //Flash Deal
         $this->productFlashDealService->store($request->only([
-            'flash_deal_id', 'flash_discount', 'flash_discount_type'
-        ]), $product);
+                    'flash_deal_id', 'flash_discount', 'flash_discount_type'
+                ]), $product);
 
         //Product Stock
         $this->productStockService->store($request->only([
-            'colors_active', 'colors', 'choice_no', 'unit_price', 'sku', 'current_stock', 'product_id'
-        ]), $product);
+                    'colors_active', 'colors', 'choice_no', 'unit_price', 'sku', 'current_stock', 'product_id'
+                ]), $product);
 
         // Product Translations
         $request->merge(['lang' => env('DEFAULT_LANGUAGE')]);
         ProductTranslation::create($request->only([
-            'lang', 'name', 'unit', 'description', 'product_id'
+                    'lang', 'name', 'unit', 'short_description', 'description', 'product_id'
         ]));
 
         flash(translate('Product has been inserted successfully'))->success();
@@ -244,8 +236,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
@@ -255,8 +246,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function admin_product_edit(Request $request, $id)
-    {
+    public function admin_product_edit(Request $request, $id) {
         CoreComponentRepository::initializeCache();
 
         $product = Product::findOrFail($id);
@@ -267,9 +257,9 @@ class ProductController extends Controller
         $lang = $request->lang;
         $tags = json_decode($product->tags);
         $categories = Category::where('parent_id', 0)
-            ->where('digital', 0)
-            ->with('childrenCategories')
-            ->get();
+                ->where('digital', 0)
+                ->with('childrenCategories')
+                ->get();
         return view('backend.product.products.edit', compact('product', 'categories', 'tags', 'lang'));
     }
 
@@ -279,8 +269,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function seller_product_edit(Request $request, $id)
-    {
+    public function seller_product_edit(Request $request, $id) {
         $product = Product::findOrFail($id);
         if ($product->digital == 1) {
             return redirect('digitalproducts/' . $id . '/edit');
@@ -289,9 +278,9 @@ class ProductController extends Controller
         $tags = json_decode($product->tags);
         // $categories = Category::all();
         $categories = Category::where('parent_id', 0)
-            ->where('digital', 0)
-            ->with('childrenCategories')
-            ->get();
+                ->where('digital', 0)
+                ->with('childrenCategories')
+                ->get();
 
         return view('backend.product.products.edit', compact('product', 'categories', 'tags', 'lang'));
     }
@@ -303,12 +292,11 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductRequest $request, Product $product)
-    {
+    public function update(ProductRequest $request, Product $product) {
         //Product
         $product = $this->productService->update($request->except([
-            '_token', 'sku', 'choice', 'tax_id', 'tax', 'tax_type', 'flash_deal_id', 'flash_discount', 'flash_discount_type'
-        ]), $product);
+                    '_token', 'sku', 'choice', 'tax_id', 'tax', 'tax_type', 'flash_deal_id', 'flash_discount', 'flash_discount_type'
+                ]), $product);
 
         //Product Stock
         foreach ($product->stocks as $key => $stock) {
@@ -317,30 +305,30 @@ class ProductController extends Controller
 
         $request->merge(['product_id' => $product->id]);
         $this->productStockService->store($request->only([
-            'colors_active', 'colors', 'choice_no', 'unit_price', 'sku', 'current_stock', 'product_id'
-        ]), $product);
+                    'colors_active', 'colors', 'choice_no', 'unit_price', 'sku', 'current_stock', 'product_id'
+                ]), $product);
 
         //Flash Deal
         $this->productFlashDealService->store($request->only([
-            'flash_deal_id', 'flash_discount', 'flash_discount_type'
-        ]), $product);
+                    'flash_deal_id', 'flash_discount', 'flash_discount_type'
+                ]), $product);
 
         //VAT & Tax
         if ($request->tax_id) {
             ProductTax::where('product_id', $product->id)->delete();
             $this->productTaxService->store($request->only([
-                'tax_id', 'tax', 'tax_type', 'product_id'
+                        'tax_id', 'tax', 'tax_type', 'product_id'
             ]));
         }
 
         // Product Translations
         ProductTranslation::updateOrCreate(
-            $request->only([
-                'lang', 'product_id'
-            ]),
-            $request->only([
-                'name', 'unit', 'description'
-            ])
+                $request->only([
+                    'lang', 'product_id'
+                ]),
+                $request->only([
+                    'name', 'unit', 'short_description', 'description'
+                ])
         );
 
         flash(translate('Product has been updated successfully'))->success();
@@ -357,8 +345,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $product = Product::findOrFail($id);
 
         $product->product_translations()->delete();
@@ -381,8 +368,7 @@ class ProductController extends Controller
         }
     }
 
-    public function bulk_product_delete(Request $request)
-    {
+    public function bulk_product_delete(Request $request) {
         if ($request->id) {
             foreach ($request->id as $product_id) {
                 $this->destroy($product_id);
@@ -398,10 +384,9 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function duplicate(Request $request, $id)
-    {
+    public function duplicate(Request $request, $id) {
         $product = Product::find($id);
-        
+
         //Product
         $product_new = $this->productService->product_duplicate_store($product);
 
@@ -420,14 +405,12 @@ class ProductController extends Controller
             return redirect()->route('products.all');
     }
 
-    public function get_products_by_brand(Request $request)
-    {
+    public function get_products_by_brand(Request $request) {
         $products = Product::where('brand_id', $request->brand_id)->get();
         return view('partials.product_select', compact('products'));
     }
 
-    public function updateTodaysDeal(Request $request)
-    {
+    public function updateTodaysDeal(Request $request) {
         $product = Product::findOrFail($request->id);
         $product->todays_deal = $request->status;
         $product->save();
@@ -435,17 +418,14 @@ class ProductController extends Controller
         return 1;
     }
 
-    public function updatePublished(Request $request)
-    {
+    public function updatePublished(Request $request) {
         $product = Product::findOrFail($request->id);
         $product->published = $request->status;
 
         if ($product->added_by == 'seller' && addon_is_activated('seller_subscription') && $request->status == 1) {
             $shop = $product->user->shop;
             if (
-                $shop->package_invalid_at == null
-                || Carbon::now()->diffInDays(Carbon::parse($shop->package_invalid_at), false) < 0
-                || $shop->product_upload_limit <= $shop->user->products()->where('published', 1)->count()
+                    $shop->package_invalid_at == null || Carbon::now()->diffInDays(Carbon::parse($shop->package_invalid_at), false) < 0 || $shop->product_upload_limit <= $shop->user->products()->where('published', 1)->count()
             ) {
                 return 0;
             }
@@ -458,17 +438,14 @@ class ProductController extends Controller
         return 1;
     }
 
-    public function updateProductApproval(Request $request)
-    {
+    public function updateProductApproval(Request $request) {
         $product = Product::findOrFail($request->id);
         $product->approved = $request->approved;
 
         if ($product->added_by == 'seller' && addon_is_activated('seller_subscription')) {
             $shop = $product->user->shop;
             if (
-                $shop->package_invalid_at == null
-                || Carbon::now()->diffInDays(Carbon::parse($shop->package_invalid_at), false) < 0
-                || $shop->product_upload_limit <= $shop->user->products()->where('published', 1)->count()
+                    $shop->package_invalid_at == null || Carbon::now()->diffInDays(Carbon::parse($shop->package_invalid_at), false) < 0 || $shop->product_upload_limit <= $shop->user->products()->where('published', 1)->count()
             ) {
                 return 0;
             }
@@ -476,9 +453,9 @@ class ProductController extends Controller
 
         $product->save();
 
-        $product_type   = $product->digital ==  0 ? 'physical' : 'digital';
-        $status         = $request->approved == 1 ? 'approved' : 'rejected';
-        $users          = User::findMany([User::where('user_type', 'admin')->first()->id, $product->user_id]);
+        $product_type = $product->digital == 0 ? 'physical' : 'digital';
+        $status = $request->approved == 1 ? 'approved' : 'rejected';
+        $users = User::findMany([User::where('user_type', 'admin')->first()->id, $product->user_id]);
         Notification::send($users, new ShopProductNotification($product_type, $product, $status));
 
         Artisan::call('view:clear');
@@ -486,8 +463,7 @@ class ProductController extends Controller
         return 1;
     }
 
-    public function updateFeatured(Request $request)
-    {
+    public function updateFeatured(Request $request) {
         $product = Product::findOrFail($request->id);
         $product->featured = $request->status;
         if ($product->save()) {
@@ -498,8 +474,7 @@ class ProductController extends Controller
         return 0;
     }
 
-    public function sku_combination(Request $request)
-    {
+    public function sku_combination(Request $request) {
         $options = array();
         if ($request->has('colors_active') && $request->has('colors') && count($request->colors) > 0) {
             $colors_active = 1;
@@ -530,8 +505,7 @@ class ProductController extends Controller
         return view('backend.product.products.sku_combinations', compact('combinations', 'unit_price', 'colors_active', 'product_name'));
     }
 
-    public function sku_combination_edit(Request $request)
-    {
+    public function sku_combination_edit(Request $request) {
         $product = Product::findOrFail($request->id);
 
         $options = array();

@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProductTranslation extends Model
-{
-    protected $fillable = ['product_id', 'name', 'unit', 'description', 'lang'];
+class ProductTranslation extends Model {
 
-    public function product(){
-      return $this->belongsTo(Product::class);
+    protected $fillable = ['product_id', 'name', 'unit', 'short_description', 'description', 'lang'];
+
+    public function product() {
+        return $this->belongsTo(Product::class);
     }
 }

@@ -54,12 +54,12 @@
             <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
             <!-- CSS Files -->
-            <!--<link rel="stylesheet" href="{{ static_asset('assets/css/vendors.css') }}">-->
+            <link rel="stylesheet" href="{{ static_asset('assets/css/vendors.css') }}">
     @if(get_session_language()->rtl == 1)
             <!--<link rel="stylesheet" href="{{ static_asset('assets/css/bootstrap-rtl.min.css') }}">-->
     @endif
-            <!--<link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css?v=') }}{{ rand(1000,9999) }}">-->
-            <!--<link rel="stylesheet" href="{{ static_asset('assets/css/custom-style.css') }}">-->
+            <link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css?v=') }}{{ rand(1000,9999) }}">
+            <link rel="stylesheet" href="{{ static_asset('assets/css/custom-style.css') }}">
 
             <!-- ======= All CSS Plugins here ======== -->
             <link rel="stylesheet" href="{{ static_asset('assets/css/plugins/swiper-bundle.min.css') }}">
@@ -71,6 +71,7 @@
 
             <!-- Custom Style CSS -->
             <link rel="stylesheet" href="{{ static_asset('assets/css/style.css') }}">
+            <link rel="stylesheet" href="{{ static_asset('assets/css/Bootstrap.4.5.0.css') }}">
 
             <script>
                 var AIZ = AIZ || {};
@@ -286,7 +287,6 @@
 
         <!-- SCRIPTS -->
         <script src="{{ static_asset('assets/js/vendors.js') }}"></script>
-        <!--<script src="{{ static_asset('assets/js/aiz-core.js?v=') }}{{ rand(1000,9999) }}"></script>-->
 
         <!-- Scroll top bar -->
         <button aria-label="scroll top btn" id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
@@ -300,6 +300,7 @@
 
         <!-- Customscript js -->
         <script src="{{ static_asset('assets/js/script.js') }}" defer="defer"></script>
+        <script src="{{ static_asset('assets/js/aiz-core.js?v=') }}{{ rand(1000,9999) }}"></script>
 
 
 
@@ -445,6 +446,7 @@
 
             function showLoginModal() {
                 $('#login_modal').modal();
+//                loginmodalPopup();
             }
 
             function addToCompare(id){

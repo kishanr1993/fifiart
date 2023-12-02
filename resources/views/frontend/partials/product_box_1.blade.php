@@ -49,9 +49,9 @@
                 </li>
             </ul>
         </div>
-        <div class="product__items--content style2 position__relative">
+        <div class="product__items--content text-center">
             <div class="product__items--color">
-                <ul class="product__items--color__wrapper d-flex">
+                <ul class="product__items--color__wrapper d-flex justify-content-center">
                     <li class="product__items--color__list"><a class="product__items--color__link one" href="javascript:void(0)"><span class="visually-hidden">Color 1</span></a></li>
                     <li class="product__items--color__list"><a class="product__items--color__link two" href="javascript:void(0)"><span class="visually-hidden">Color 2</span></a></li>
                     <li class="product__items--color__list"><a class="product__items--color__link three" href="javascript:void(0)"><span class="visually-hidden">Color 3</span></a></li>
@@ -70,7 +70,7 @@
                         
                 @endif
             </div>
-            <a class="product__cart--btn__style2 primary__btn" href="javascript:void(0)" @if (Auth::check()) onclick="showAddToCartModal({{ $product->id }})" @else onclick="showLoginModal()" @endif>
+            <a class="product__items--action__cart--btn primary__btn" href="{{ $product_url }}">
                {{ translate('Add to Cart') }}
             </a>
         </div>

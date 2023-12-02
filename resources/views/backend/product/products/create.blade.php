@@ -305,6 +305,12 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
+                            <label class="col-md-3 col-from-label">{{translate('Short Description')}}</label>
+                            <div class="col-md-8">
+                                <textarea class="aiz-text-editor" name="short_description"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="col-md-3 col-from-label">{{translate('Description')}}</label>
                             <div class="col-md-8">
                                 <textarea class="aiz-text-editor" name="description"></textarea>

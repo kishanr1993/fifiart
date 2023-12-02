@@ -96,6 +96,11 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/></svg>
                                 <span class="visually-hidden">Offcanvas Menu Open</span>
                             </a>
+                            <a class="offcanvas__stikcy--toolbar__btn search__open--btn" href="javascript:void(0)">
+                            <span class="offcanvas__stikcy--toolbar__icon"> 
+                                <svg xmlns="http://www.w3.org/2000/svg"  width="22.51" height="20.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>   
+                            </span>
+                        </a>
                         </div>
                         <div class="main__logo">
                             <h1 class="main__logo--title">
@@ -162,7 +167,7 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18.897" height="21.565" viewBox="0 0 18.897 21.565">
                                         <path  d="M16.84,8.082V6.091a4.725,4.725,0,1,0-9.449,0v4.725a.675.675,0,0,0,1.35,0V9.432h5.4V8.082h-5.4V6.091a3.375,3.375,0,0,1,6.75,0v4.691a.675.675,0,1,0,1.35,0V9.433h3.374V21.581H4.017V9.432H6.041V8.082H2.667V21.641a1.289,1.289,0,0,0,1.289,1.29h16.32a1.289,1.289,0,0,0,1.289-1.29V8.082Z" transform="translate(-2.667 -1.366)" fill="currentColor"/>
                                         </svg>
-                                        <span class="items__count">{{(isset($carts) && count($carts) > 0) ? count($carts) : 0 }}</span> 
+                                        <span class="items__count cart-count">{{(isset($carts) && count($carts) > 0) ? count($carts) : 0 }}</span> 
                                     </a>
                                 </li>
                                 
@@ -401,7 +406,7 @@
                                 </svg> 
                             </span>
                             <span class="offcanvas__stikcy--toolbar__label">Cart</span>
-                            <span class="items__count">{{(isset($carts) && count($carts) > 0) ? count($carts) : 0 }}</span> 
+                            <span class="items__count cart-count">{{(isset($carts) && count($carts) > 0) ? count($carts) : 0 }}</span> 
                         </a>
                     </li>
                     <li class="offcanvas__stikcy--toolbar__list">
