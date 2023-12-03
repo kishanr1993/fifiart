@@ -60,27 +60,27 @@
                         <td class="cart__table--body__list">
 
                                     @if ($cartItem['digital'] != 1 && $product->auction_product == 0)
-                            <div class="quantity__boxst aiz-plus-minus">
+                            <div class="quantity__boxst aiz-plus-minus quantity__box">
                                 <button
                                     class="quantity__value quickview__value--quantity decrease"
-                                    type="button" data-type="plus"
+                                    type="button" data-type="minus"
                                     data-field="quantity[{{ $cartItem['id'] }}]">
-                                    <i class="las la-plus"></i>
+                                    -
                                 </button>
-                                <label>
-                                    <input type="number" class="quantity__number quickview__value--number" 
+                                <!--<label>-->
+                                    <input type="number" class="quantity__number quickview__value--number quantity__number quickview__value--number" 
                                            name="quantity[{{ $cartItem['id'] }}]"
                                            placeholder="1" value="{{ $cartItem['quantity'] }}"
                                            min="{{ $product->min_qty }}"
                                            max="{{ $product_stock->qty }}"
-                                           onchange="updateQuantity({{ $cartItem['id'] }}, this)" style="padding-left:0.75rem !important;"
+                                           onchange="updateQuantity({{ $cartItem['id'] }}, this)"
                                            />
-                                </label>
+                                <!--</label>-->
                                 <button
-                                    class="quantity__value quickview__value--quantity increase"
-                                    type="button" data-type="minus"
+                                    class="quantity__value quickview__value--quantity increase "
+                                    type="button" data-type="plus"
                                     data-field="quantity[{{ $cartItem['id'] }}]">
-                                    <i class="las la-minus"></i>
+                                    +
                                 </button>
                             </div>
                                     @elseif($product->auction_product == 1)
