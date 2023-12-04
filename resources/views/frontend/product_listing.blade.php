@@ -87,7 +87,7 @@
                                          @foreach (get_level_zero_categories() as $category)
                                     <li class="widget__categories--menu__list">
                                         <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('products.category', $category->slug) }}">
-                                            <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                            <img class="widget__categories--sub__menu--img" src="{{ uploaded_asset($category->icon) }}" alt="{{ $category->getTranslation('name') }}">
                                             <span class="widget__categories--sub__menu--text">{{ $category->getTranslation('name') }}</span>
                                         </a>
 
@@ -97,7 +97,7 @@
 
                                     <li class="widget__categories--menu__list">
                                         <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('search') }}">
-                                            <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                            <img class="widget__categories--sub__menu--img" src="{{ asset('public/assets/img/all-category.png') }}" alt="{{ translate('All Categories')}}">
                                             <span class="widget__categories--sub__menu--text">{{ translate('All Categories')}}</span>
                                         </a>
 
@@ -107,7 +107,7 @@
 
                                     <li class="widget__categories--menu__list">
                                         <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('products.category', get_single_category(get_single_category($category_id)->parent_id)->slug) }}">
-                                            <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                            <img class="widget__categories--sub__menu--img" src="{{ uploaded_asset(get_single_category($category_id)->parent_id->icon) }}" alt="{{ get_single_category(get_single_category($category_id)->parent_id)->getTranslation('name') }}">
                                             <span class="widget__categories--sub__menu--text">{{ get_single_category(get_single_category($category_id)->parent_id)->getTranslation('name') }}</span>
                                         </a>
 
@@ -127,7 +127,7 @@
                                                 @foreach (\App\Utility\CategoryUtility::get_immediate_children_ids($category_id) as $key => $id)
                                             <li class="widget__categories--sub__menu--list">
                                                 <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('products.category', get_single_category($id)->slug) }}">
-                                                    <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                                    <img class="widget__categories--sub__menu--img" src="{{ uploaded_asset(get_single_category($id)->icon) }}" alt="{{ get_single_category($id)->getTranslation('name') }}">
                                                     <span class="widget__categories--sub__menu--text">{{ get_single_category($id)->getTranslation('name') }}</span>
                                                 </a>
                                             </li>
@@ -224,7 +224,7 @@
                                          @foreach (get_level_zero_categories() as $category)
                                         <li class="widget__categories--menu__list">
                                             <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('products.category', $category->slug) }}">
-                                                <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                                <img class="widget__categories--sub__menu--img" src="{{ uploaded_asset($category->icon) }}" alt="categories-img">
                                                 <span class="widget__categories--sub__menu--text">{{ $category->getTranslation('name') }}</span>
                                             </a>
 
@@ -234,7 +234,7 @@
 
                                         <li class="widget__categories--menu__list">
                                             <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('search') }}">
-                                                <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                                <img class="widget__categories--sub__menu--img" src="{{ asset('public/assets/img/all-category.png') }}" alt="categories-img">
                                                 <span class="widget__categories--sub__menu--text">{{ translate('All Categories')}}</span>
                                             </a>
 
@@ -244,7 +244,7 @@
 
                                         <li class="widget__categories--menu__list">
                                             <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('products.category', get_single_category(get_single_category($category_id)->parent_id)->slug) }}">
-                                                <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                                <img class="widget__categories--sub__menu--img" src="{{ uploaded_asset(get_single_category($id)->icon) }}" alt="categories-img">
                                                 <span class="widget__categories--sub__menu--text">{{ get_single_category(get_single_category($category_id)->parent_id)->getTranslation('name') }}</span>
                                             </a>
 
@@ -264,7 +264,7 @@
                                                 @foreach (\App\Utility\CategoryUtility::get_immediate_children_ids($category_id) as $key => $id)
                                                 <li class="widget__categories--sub__menu--list">
                                                     <a class="widget__categories--sub__menu--link d-flex align-items-center" href="{{ route('products.category', get_single_category($id)->slug) }}">
-                                                        <img class="widget__categories--sub__menu--img" src="assets/img/product/small-product2.webp" alt="categories-img">
+                                                        <img class="widget__categories--sub__menu--img" src="{{ uploaded_asset(get_single_category($id)->icon) }}" alt="categories-img">
                                                         <span class="widget__categories--sub__menu--text">{{ get_single_category($id)->getTranslation('name') }}</span>
                                                     </a>
                                                 </li>

@@ -12,7 +12,7 @@
                     <div class="breadcrumb__content">
                         <h1 class="breadcrumb__content--title text-white mb-10">Checkout</h1>
                         <ul class="breadcrumb__content--menu d-flex">
-                            <li class="breadcrumb__content--menu__items"><a class="text-white" href="index.html">Home</a></li>
+                            <li class="breadcrumb__content--menu__items"><a class="text-white" href="{{ route('home') }}">Home</a></li>
                             <li class="breadcrumb__content--menu__items"><span class="text-white">Checkout</span></li>
                         </ul>
                     </div>
@@ -27,7 +27,7 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-xl-8 mx-auto">
+                <div class="col-lg-12 mx-auto">
                     <div class="row gutters-5 sm-gutters-10">
                         <div class="col done">
                             <div class="text-center border border-bottom-6px p-2 text-success">

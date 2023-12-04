@@ -11,7 +11,7 @@
                     <div class="breadcrumb__content">
                         <h1 class="breadcrumb__content--title text-white mb-10">Shopping Cart</h1>
                         <ul class="breadcrumb__content--menu d-flex">
-                            <li class="breadcrumb__content--menu__items"><a class="text-white" href="index.html">Home</a></li>
+                            <li class="breadcrumb__content--menu__items"><a class="text-white" href="{{ route('home') }}">Home</a></li>
                             <li class="breadcrumb__content--menu__items"><span class="text-white">Shopping Cart</span></li>
                         </ul>
                     </div>
@@ -26,9 +26,9 @@
     <section class="cart__section section--padding">
         <div class="container-fluid">
             <div class="cart__section--inner">
-                <h2 class="cart__title mb-40">Shopping Cart</h2>
                 <div class="row mb-40">
                     <div class="col-xl-10 mx-auto">
+                        <!--<h2 class="cart__title mb-40">Shopping Cart</h2>-->
                         <div class="row gutters-5 sm-gutters-10">
                             <div class="col active">
                                 <div class="text-center border border-bottom-6px p-2 text-primary">
@@ -66,16 +66,16 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="cart-summary">
                     @include('frontend.partials.cart_details', ['carts' => $carts])
-                    </div>
+                </div>
             </div>
         </div>     
     </section>
     <!-- cart section end -->
 
-    
+
 
     <!-- Start shipping section -->
     <section class="shipping__section shipping_mt position__relative section--padding pt-0">

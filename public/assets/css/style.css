@@ -6356,7 +6356,7 @@ input[type="number"]::-webkit-outer-spin-button {
     color: var(--secondary-color);
 }
 .variant__size--value {
-    width: 4.7rem;
+    width: 6.2rem;
     height: 3.2rem;
     line-height: 3.2rem;
     display: inline-block;
