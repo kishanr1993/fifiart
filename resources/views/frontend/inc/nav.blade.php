@@ -120,22 +120,33 @@
                             <nav class="header__menu--navigation">
                                 <ul class="d-flex">
                                    
+                                    <li class="header__menu--items">
+                                        <a href="{{ route('home') }}" class="header__menu--link 
+                                        @if (Request::routeIs('home')) active @endif">
+                                            {{ translate('Home') }}
+                                        </a>
+                                    </li>
+                                    
                                     <li class="header__menu--items mega__menu--items">
                                         <a class="header__menu--link" href="#">Shop <span class="menu__plus--icon">+</span></a>
                                         @include('frontend.partials.category_menu')      
                                     </li>
                                     
-                                    @if (get_setting('header_menu_labels') != null)
-                                        @foreach (json_decode(get_setting('header_menu_labels'), true) as $key => $value)
-                                            <li class="header__menu--items">
-                                                <a href="{{ json_decode(get_setting('header_menu_links'), true)[$key] }}"
-                                                    class="header__menu--link 
-                                                @if (url()->current() == json_decode(get_setting('header_menu_links'), true)[$key]) active @endif">
-                                                    {{ translate($value) }}
-                                                </a>
-                                            </li>
-                                        @endforeach
-                                    @endif
+                                    <li class="header__menu--items">
+                                        <a href="#" class="header__menu--link">
+                                            {{ translate('About Us') }}
+                                        </a>
+                                    </li>
+                                    
+                                    <li class="header__menu--items">
+                                        <a href="#" class="header__menu--link">
+                                            {{ translate('Contact') }}
+                                        </a>
+                                    </li>
+                                    
+                                    
+                                    
+                                    
                                     
                                 </ul>
                             </nav>
@@ -250,7 +261,12 @@
                                 <a class="offcanvas__menu_item" href="#">Shop</a>
                                 @include('frontend.partials.category_menu_offcanvas')
                             </li>
-                            
+                            <li class="offcanvas__menu_li">
+                                <a class="offcanvas__menu_item" href="#">{{ translate('About Us') }}</a>       
+                            </li>
+                            <li class="offcanvas__menu_li">
+                                <a class="offcanvas__menu_item" href="#"> {{ translate('Contact') }}</a>       
+                            </li>
                         </ul>
                         <div class="offcanvas__account--items">
                             @auth
@@ -370,18 +386,6 @@
             <!-- Start Offcanvas stikcy toolbar -->
             <div class="offcanvas__stikcy--toolbar" tabindex="-1">
                 <ul class="d-flex justify-content-between">
-                    
-                    @if (get_setting('header_menu_labels') != null)
-                        @foreach (json_decode(get_setting('header_menu_labels'), true) as $key => $value)
-                            <li class="offcanvas__stikcy--toolbar__list">
-                                <a href="{{ json_decode(get_setting('header_menu_links'), true)[$key] }}"
-                                    class="offcanvas__stikcy--toolbar__btn 
-                                @if (url()->current() == json_decode(get_setting('header_menu_links'), true)[$key]) active @endif">
-                                    <span class="offcanvas__stikcy--toolbar__label">{{ translate($value) }}</span>
-                                </a>
-                            </li>
-                        @endforeach
-                    @endif
                     
                     <li class="offcanvas__stikcy--toolbar__list ">
                         <a class="offcanvas__stikcy--toolbar__btn search__open--btn" href="javascript:void(0)">
