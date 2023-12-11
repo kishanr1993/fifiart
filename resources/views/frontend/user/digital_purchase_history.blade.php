@@ -1,5 +1,26 @@
 @extends('frontend.layouts.user_panel')
 
+@section('panel_content_breadcrumb')
+<!-- Start breadcrumb section -->
+<section class="breadcrumb__section breadcrumb__bg">
+    <div class="container">
+        <div class="row row-cols-1">
+            <div class="col">
+                <div class="breadcrumb__content">
+                    <h1 class="breadcrumb__content--title text-white mb-10">My Account</h1>
+                    <ul class="breadcrumb__content--menu d-flex">
+                        <li class="breadcrumb__content--menu__items"><a class="text-white" href="{{ route('home') }}">Home</a></li>
+                        <li class="breadcrumb__content--menu__items"><span class="text-white">Download Your Products</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End breadcrumb section -->
+
+@endsection
+
 @section('panel_content')
     <div class="card shadow-none rounded-0 border">
         <div class="card-header border-bottom-0">

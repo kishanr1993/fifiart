@@ -8244,7 +8244,7 @@ input[type="number"] {
         width: 25%;
     }
     .modal-md {
-        max-width: 600px;
+        max-width: 600px !important;
     }
 }
 @media (min-width: 992px) {
@@ -9034,7 +9034,7 @@ div.footable-loader > span.fooicon:after {
     font-size: 0;
 }
 .modal-header .close:before {
-    font-family: "Line Awesome Free";
+    /*font-family: "Line Awesome Free";*/
     font-weight: 900;
     content: "\f00d";
     font-size: 20px;

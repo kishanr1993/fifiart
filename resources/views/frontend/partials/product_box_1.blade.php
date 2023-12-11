@@ -70,7 +70,7 @@
                         
                 @endif
             </div>
-            <a class="product__items--action__cart--btn primary__btn" href="{{ $product_url }}">
+            <a class="product__items--action__cart--btn primary__btn @if (in_array($product->id, $cart_added)) active @endif" href="javascript:void(0)" @if (Auth::check()) onclick="showAddToCartModal({{ $product->id }})" @else onclick="showLoginModal()" @endif>
                {{ translate('Add to Cart') }}
             </a>
         </div>

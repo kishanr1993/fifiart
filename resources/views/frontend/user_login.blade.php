@@ -37,12 +37,12 @@
                                 </div>
                                 <div class="account__login--inner">
                                     @if (addon_is_activated('otp_system'))
-                                    <label>
+                                    <label class="display-block">
                                         <input class="account__login--input {{ $errors->has('phone') ? ' is-invalid' : '' }}" placeholder="{{  translate('Phone') }}" type="tel" id="phone-code" value="{{ old('phone') }}" name="phone" autocomplete="off" />
                                     </label>
                                     <input type="hidden" name="country_code" value="" />
 
-                                    <label>
+                                    <label class="display-block">
                                         <input class="account__login--input {{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{  translate('Email') }}" type="email" id="phone-code" value="{{ old('email') }}" name="email" id="email" autocomplete="off" />
                                             @if ($errors->has('email'))
                                         <span class="invalid-feedback" role="alert">
@@ -55,7 +55,7 @@
 
                                     @else
 
-                                    <label>
+                                    <label class="display-block">
                                         <input class="account__login--input {{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{  translate('Email') }}" type="{{ old('email') }}" name="email" id="email" autocomplete="off" />
                                                 @if ($errors->has('email'))
                                         <span class="invalid-feedback" role="alert">
@@ -67,7 +67,7 @@
                                     @endif
 
                                     <!-- password -->
-                                    <label>
+                                    <label class="display-block">
                                         <input class="account__login--input {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{  translate('Password') }}" type="password" name="password" id="password" />
                                     </label>
 

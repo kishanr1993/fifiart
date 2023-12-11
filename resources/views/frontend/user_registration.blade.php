@@ -38,7 +38,7 @@
                                 <div class="account__login--inner">
 
                                     <!-- Name -->
-                                    <label>
+                                    <label class="display-block">
                                         <input type="text" class="account__login--input {{ $errors->has('name') ? ' is-invalid' : '' }}" value="{{ old('name') }}" placeholder="{{  translate('Full Name') }}" name="name">
                                         @if ($errors->has('name'))
                                         <span class="invalid-feedback" role="alert">
@@ -50,12 +50,12 @@
                                     <!-- Email or Phone -->
                                     @if (addon_is_activated('otp_system'))
 
-                                    <label>
+                                    <label class="display-block">
                                         <input type="tel" id="phone-code" class="account__login--input {{ $errors->has('phone') ? ' is-invalid' : '' }}" value="{{ old('phone') }}" placeholder="" name="phone" autocomplete="off">
                                     </label>
                                     <input type="hidden" name="country_code" value="">
 
-                                    <label>
+                                    <label class="display-block">
                                         <input type="email" class="account__login--input {{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{  translate('Email') }}" name="email"  autocomplete="off">
                                             @if ($errors->has('email'))
                                         <span class="invalid-feedback" role="alert">
@@ -64,13 +64,13 @@
                                             @endif
                                     </label>
 
-                                    <label>
+                                    <label class="display-block">
                                         <button class="account__login--btn primary__btn mb-10" type="button" onclick="toggleEmailPhone(this)"><i>*{{ translate('Use Email Instead') }}</i></button>
                                     </label>
 
                                     @else
 
-                                    <label>
+                                    <label class="display-block">
                                         <input type="email" class="account__login--input {{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{ old('email') }}" placeholder="{{  translate('Email') }}" name="email">
                                             @if ($errors->has('email'))
                                         <span class="invalid-feedback" role="alert">
@@ -82,7 +82,7 @@
                                     @endif
 
                                     <!-- password -->
-                                    <label>
+                                    <label class="display-block">
                                         <input type="password" class="account__login--input {{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{  translate('Password') }}" name="password">
                                         <div class="text-right mt-1">
                                             <span class="fs-12 fw-400 text-gray-dark">{{ translate('Password must contain at least 6 digits') }}</span>
@@ -95,7 +95,7 @@
                                     </label>
 
                                     <!-- password Confirm -->
-                                    <label>
+                                    <label class="display-block">
                                         <input type="password" class="account__login--input" placeholder="{{  translate('Confirm Password') }}" name="password_confirmation">
                                     </label>
 
@@ -118,7 +118,7 @@
                                         </label>
                                     </div>
 
-                                    <label>
+                                    <label class="display-block">
                                         <button class="account__login--btn primary__btn mb-10" type="submit">{{  translate('Create Account') }}</button>
                                     </label>
                                 </div>
