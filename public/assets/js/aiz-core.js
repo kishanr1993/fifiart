@@ -1422,22 +1422,22 @@ $.fn.toggleAttr = function (attr, attr1, attr2) {
                     showLabel: false,
                     showCount: false,
                     shares: [
-                        {
-                            share: "email",
-                            logo: "lar la-envelope"
-                        },
-                        {
-                            share: "twitter",
-                            logo: "lab la-twitter"
-                        },
+//                        {
+//                            share: "email",
+//                            logo: "lar la-envelope"
+//                        },
+//                        {
+//                            share: "twitter",
+//                            logo: "lab la-twitter"
+//                        },
                         {
                             share: "facebook",
                             logo: "lab la-facebook-f"
                         },
-                        {
-                            share: "linkedin",
-                            logo: "lab la-linkedin-in"
-                        },
+//                        {
+//                            share: "linkedin",
+//                            logo: "lab la-linkedin-in"
+//                        },
                         {
                             share: "whatsapp",
                             logo: "lab la-whatsapp"
